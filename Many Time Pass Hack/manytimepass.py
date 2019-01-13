@@ -31,6 +31,73 @@ ciphertexts[8] = "271946f9bbb2aeadec111841a81abc300ecaa01bd8069d5cc91005e9fe4aad
 ciphertexts[9] = "466d06ece998b7a2fb1d464fed2ced7641ddaa3cc31c9941cf110abbf409ed39598005b3399ccfafb61d0315fca0a314be138a9f32503bedac8067f03adbf3575c3b8edc9ba7f537530541ab0f9f3cd04ff50d66f1d559ba520e89a2cb2a83"
 target = "32510ba9babebbbefd001547a810e67149caee11d945cd7fc81a05e9f85aac650e9052ba6a8cd8257bf14d13e6f0a803b54fde9e77472dbff89d71b57bddef121336cb85ccb8f3315f4b52e301d16e9f52f904"
 
+def main():
+    global target, ciphertexts
+
+    bytesTargetRepresentation = codecs.decode(target,"hex")
+    stringTargetRepresentation = ""
+
+    for byte in bytesTargetRepresentation:
+        stringTargetRepresentation += chr(byte)
+
+    answers = []
+    for key in ciphertexts:
+        cipher = ciphertexts[key]
+        ciphertextBytesRepresentation = codecs.decode(cipher,"hex")
+
+        ciphertextStringRepresentation = ""
+
+        for byte in ciphertextBytesRepresentation:
+            ciphertextStringRepresentation += chr(byte)
+
+        hexXorResult = strxor(stringTargetRepresentation, ciphertextStringRepresentation)
+        guessedString = ""
+        for g in hexXorResult:
+            if (ord(g) >= 65 and ord(g) <= 90) or (ord(g) >= 97 and ord(g) <= 122):
+                guessedString += g
+            else:
+                guessedString += "*"
+        answers.append(guessedString)
+
+    resultHeuristic(answers)
+
+
+def resultHeuristic(answers):
+
+    maxLenCandidates = []
+    for i in answers:
+        maxLenCandidates.append(len(i))
+        print(i)
+    maxLength = max(maxLenCandidates)
+
+    heuristicResult = ""
+    for j in range(maxLength):
+        listOfElements = []
+        for i in answers:
+            try:
+                if (ord(i[j]) >= 65 and ord(i[j]) <= 90) or (ord(i[j]) >= 97 and ord(i[j]) <= 122):
+                    listOfElements.append(i[j])
+            except:
+                continue
+
+        distinctElements = []
+        for element in listOfElements:
+            if element in distinctElements:
+                continue
+            else:
+                distinctElements.append(element)
+
+        if len(distinctElements) > 3 or listOfElements == []:
+            heuristicResult+= " "
+        else:
+            heuristicResult += max(listOfElements, key = listOfElements.count)
+
+    heuristicResult = ''.join(c.lower() if c.isupper() else c.upper() for c in heuristicResult)
+
+    print("\nAnswer obtained : \n" + heuristicResult + "\n")
+    print("Original answer : \nThe secret message is : When using a stream cipher never use the key more than once\n")
+
+
 # xor two strings of different lengths
 def strxor(a, b):
     if len(a) > len(b):
@@ -39,65 +106,5 @@ def strxor(a, b):
        return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b[:len(a)])])
 
 
-target = codecs.decode(target,"hex")
-s = ""
-for i in target:
-    s += chr(i)
-answers = []
-for key in ciphertexts:
-    cipher = ciphertexts[key]
-    q = codecs.decode(cipher,"hex")
-    s2 = ""
-    for i in q:
-        s2 += chr(i)
-    t = strxor(s, s2)
-    s3 = ""
-    for g in t:
-        if (ord(g) >= 65 and ord(g) <= 90) or (ord(g) >= 97 and ord(g) <= 122):
-            s3 += g
-        elif (ord(g) >= 48 and ord(g)<=57):
-            # s3 += str(ord(g) - 48)
-            s3 += str(int(ord(g)) - 48)
-        else:
-            s3+="*"
-    answers.append(s3)
-maxlen = []
-for i in answers:
-    maxlen.append(len(i))
-    print(i)
-maxLength = max(maxlen)
-
-# print(answers)
-def Remove(duplicate):
-    final_list = []
-    for num in duplicate:
-        if num not in final_list:
-            final_list.append(num)
-    return final_list
-
-s4 = ""
-for j in range(maxLength):
-    list1 = []
-    for i in answers:
-        # print("Hello",i[j])
-        try:
-            if (ord(i[j]) >= 65 and ord(i[j]) <= 90) or (ord(i[j]) >= 97 and ord(i[j]) <= 122):
-                list1.append(i[j])
-        except:
-            continue
-
-    counted = []
-    for element in list1:
-        if element in counted:
-            continue
-        else:
-            counted.append(element)
-    if len(counted) > 3 or list1 == []:
-        s4+= " "
-    else:
-        s4 += max(list1, key = list1.count)
-
-s4 = ''.join(c.lower() if c.isupper() else c.upper() for c in s4)
-
-print("Answer obtained : \n" + s4)
-print("Original answer : The secret message is : When using a stream cipher never use the key more than once")
+if __name__ == "__main__":
+    main()
