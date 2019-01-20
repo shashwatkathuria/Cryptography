@@ -37,7 +37,7 @@ def main():
     print("CTR Plain Text 2 : " + codecs.decode(ctrPlainText2, 'utf-8'))
     print("\n")
 
-
+# CTR - COUNTER MODE (PARALLELIZED)
 def ctrDecryption(ctrKey, ctrCipherText, blockSize):
     """Function to decrypt the ciphertext encypted using the input key and AES CTR mode.
        Inputs are the key, ciphertext and the block size."""
@@ -62,17 +62,36 @@ def ctrDecryption(ctrKey, ctrCipherText, blockSize):
 
     # Decrypting ciphertext
     paddedStr = aesEngine.decrypt(ciphertext)
+
+    # Returning plaintext
     return paddedStr
 
-
+# CBC - CIPHER BLOCK CHAINING MODE (SEQUENTIAL)
 def cbcDecryption(cbcKey, cbcCipherText, blockSize):
+    """Function to decrypt the ciphertext encypted using the input key and AES CTR mode.
+       Inputs are the key, ciphertext and the block size."""
+
+    # Decoding key using hex codec
     key = codecs.decode(cbcKey, 'hex')
+
+    # Decoding ciphertext + IV using hex codec
     ciphertextAndIV = codecs.decode(cbcCipherText, 'hex')
+
+    # Slicing to get IV (Initial Value) and ciphertext
     IV = ciphertextAndIV[:blockSize]
     ciphertext = ciphertextAndIV[blockSize:]
+
+    # Initializing new AES engine using library implementation and inputs as the
+    # key, CTR mode and IV (no counter type thing is required here)
     aesEngine = AES.new(key,AES.MODE_CBC,IV)
+
+    # Decrypting ciphertext
     paddedStr = aesEngine.decrypt(ciphertext)
+
+    # Computing padding amount
     paddingAmount = ord(paddedStr[len(paddedStr)-1:])
+
+    # Returning plaintext without padding
     return paddedStr[:-paddingAmount]
 
 if __name__ == "__main__":
