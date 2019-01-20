@@ -67,13 +67,13 @@ def ctrDecryption(ctrKey, ctrCipherText, blockSize):
 
 def cbcDecryption(cbcKey, cbcCipherText, blockSize):
     key = codecs.decode(cbcKey, 'hex')
-	ciphertextAndIV = codecs.decode(cbcCipherText, 'hex')
-	IV = ciphertextAndIV[:blockSize]
-	ciphertext = ciphertextAndIV[blockSize:]
-	aesEngine = AES.new(key,AES.MODE_CBC,IV)
-	paddedStr = aesEngine.decrypt(ciphertext)
-	paddingAmount = ord(paddedStr[len(paddedStr)-1:])
-	return paddedStr[:-paddingAmount]
+    ciphertextAndIV = codecs.decode(cbcCipherText, 'hex')
+    IV = ciphertextAndIV[:blockSize]
+    ciphertext = ciphertextAndIV[blockSize:]
+    aesEngine = AES.new(key,AES.MODE_CBC,IV)
+    paddedStr = aesEngine.decrypt(ciphertext)
+    paddingAmount = ord(paddedStr[len(paddedStr)-1:])
+    return paddedStr[:-paddingAmount]
 
 if __name__ == "__main__":
     main()
