@@ -4,8 +4,12 @@ Created on Mon Aug 20 15:09:38 2018
 
 @author: Shashwat Kathuria
 """
+
+# MANY TIME PASS HACK
+
 import codecs
 
+#  ANSWERS
 # ciphertext[0] = We can factor the number 15 with quantum computers. We can also factor the number 15 with a dog trained to bark three times - Robert Harley
 # ciphertext[1] = Euler would probably enjoy that now his theorem becomes a corner stone of crypto - Annonymous on Euler's theorem
 # ciphertext[2] = The nice thing about Keeyloq is now we cryptographers can drive a lot of fancy cars - Dan Boneh
@@ -17,6 +21,9 @@ import codecs
 # ciphertext[8] = A (private key) encryption scheme states 3 algorithms, namely a procedure for generating keys,a procedure for encrypting, and a procedure for decrypting.
 # ciphertext[9] = The Concise OxfordDictionary (2006) defines crypto as the art of writing or solving code
 # target = The secret message is: When using a stream cipher, never use the key more than once
+
+
+# INITIALIZING CIPHERTEXTS
 
 ciphertexts = {}
 ciphertexts[0] = "315c4eeaa8b5f8aaf9174145bf43e1784b8fa00dc71d885a804e5ee9fa40b16349c146fb778cdf2d3aff021dfff5b403b510d0d0455468aeb98622b137dae857553ccd8883a7bc37520e06e515d22c954eba5025b8cc57ee59418ce7dc6bc41556bdb36bbca3e8774301fbcaa3b83b220809560987815f65286764703de0f3d524400a19b159610b11ef3e"
@@ -34,76 +41,110 @@ target = "32510ba9babebbbefd001547a810e67149caee11d945cd7fc81a05e9f85aac650e9052
 def main():
     global target, ciphertexts
 
+    # Computing the bytes representation of target hex encoded string
     bytesTargetRepresentation = codecs.decode(target,"hex")
     stringTargetRepresentation = ""
 
+    # Computing the string representation of target bytes representation
     for byte in bytesTargetRepresentation:
         stringTargetRepresentation += chr(byte)
 
+    # Declaring list to store answers of xors with only the alphabet parts and *s
     answers = []
+
+    # Computing the xor of target with all the ciphertexts
     for key in ciphertexts:
         cipher = ciphertexts[key]
+
+        # Computing the bytes representation of ciphertext hex encoded string
         ciphertextBytesRepresentation = codecs.decode(cipher,"hex")
 
+        # Computing the string representation of ciphertext bytes representation
         ciphertextStringRepresentation = ""
 
         for byte in ciphertextBytesRepresentation:
             ciphertextStringRepresentation += chr(byte)
 
+        # Xorring the target and current ciphertext
         hexXorResult = strxor(stringTargetRepresentation, ciphertextStringRepresentation)
+
+        # Initializing string to store the inverted case alphabets and * for non-alphabets
         guessedString = ""
+
+        # Computing the inverted case alphabets and non-alphabets
         for g in hexXorResult:
             if (ord(g) >= 65 and ord(g) <= 90) or (ord(g) >= 97 and ord(g) <= 122):
                 guessedString += g
             else:
                 guessedString += "*"
+
+        # Adding to list of answers
         answers.append(guessedString)
 
+    # Calling heuristic function to guess string
     resultHeuristic(answers)
 
 
 def resultHeuristic(answers):
+    """Function to compute the most probabble answer based on the number of occurences
+       of letters at corresponding positions."""
 
+    # Getting the maximum length of an element of the answers list
     maxLenCandidates = []
     for i in answers:
         maxLenCandidates.append(len(i))
         print(i)
     maxLength = max(maxLenCandidates)
 
+    # Declaring result of heuristic to store the final result
     heuristicResult = ""
+
+    # Iterating through all the positions(corresponding columns) of the strings
     for j in range(maxLength):
-        listOfElements = []
+
+        # Storing alphabets in list of alphabets
+        listOfAlphabets = []
         for i in answers:
             try:
                 if (ord(i[j]) >= 65 and ord(i[j]) <= 90) or (ord(i[j]) >= 97 and ord(i[j]) <= 122):
-                    listOfElements.append(i[j])
+                    listOfAlphabets.append(i[j])
             except:
                 continue
 
+        # Computing the number of distinct elements in the list of alphabets
         distinctElements = []
-        for element in listOfElements:
+        for element in listOfAlphabets:
             if element in distinctElements:
                 continue
             else:
                 distinctElements.append(element)
 
-        if len(distinctElements) > 3 or listOfElements == []:
+        # If there are many distinct elements then the corresponding position is likely a space
+        # or some weird punctuation or even if the list of alphabets is empty
+        if len(distinctElements) > 3 or listOfAlphabets == []:
             heuristicResult+= " "
+        # Else the corresponding alphabet at that position is probably the most occured alphabet
         else:
-            heuristicResult += max(listOfElements, key = listOfElements.count)
+            heuristicResult += max(listOfAlphabets, key = listOfAlphabets.count)
 
+    # Inverting case of string to get the correct case
     heuristicResult = ''.join(c.lower() if c.isupper() else c.upper() for c in heuristicResult)
 
+    # Printing the result
     print("\nAnswer obtained : \n" + heuristicResult + "\n")
     print("Original answer : \nThe secret message is : When using a stream cipher never use the key more than once\n")
 
 
-# xor two strings of different lengths
 def strxor(a, b):
+    """Function to compute xor of two strings of different lengths. Inputs are the strings to be xored."""
+
     if len(a) > len(b):
-       return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a[:len(b)], b)])
+        # Xorring till length b and then returning result
+        return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a[:len(b)], b)])
+
     else:
-       return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b[:len(a)])])
+        # Xorring till length a and then returning result
+        return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b[:len(a)])])
 
 
 if __name__ == "__main__":
