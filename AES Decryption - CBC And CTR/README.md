@@ -31,4 +31,5 @@ xored with the corresponding plaintext block which makes up the
 ciphertext block. Decrytion is done in the reverse order of these
 steps and is quite staright forward. This mode is parallelizable
 unlike CBC Mode.
+
 ---------------------------------------
