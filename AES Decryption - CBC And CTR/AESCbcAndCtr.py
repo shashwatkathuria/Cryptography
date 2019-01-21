@@ -83,13 +83,13 @@ def cbcDecryption(cbcKey, cbcCipherText, blockSize):
 
     # Initializing new AES engine using library implementation and inputs as the
     # key, CTR mode and IV (no counter type thing is required here)
-    aesEngine = AES.new(key,AES.MODE_CBC,IV)
+    aesEngine = AES.new(key, AES.MODE_CBC, IV)
 
     # Decrypting ciphertext
     paddedStr = aesEngine.decrypt(ciphertext)
 
     # Computing padding amount
-    paddingAmount = ord(paddedStr[len(paddedStr)-1:])
+    paddingAmount = ord( paddedStr[len(paddedStr) - 1:] )
 
     # Returning plaintext without padding
     return paddedStr[:-paddingAmount]
