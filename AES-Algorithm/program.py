@@ -42,6 +42,7 @@ def main():
             temp = []
 
     # If plaintext is not a multiple of 16 bytes
+    emptySpaces = None
     if 0 < len(temp) < 16:
             emptySpaces = 16 - len(temp)
             for i in range(emptySpaces - 1):
@@ -69,7 +70,10 @@ def main():
             temp = []
 
     # Removing padding at the end
-    decryptedMessage = bytes(decryptedBytes[ : -emptySpaces])
+    if emptySpaces != None:
+        decryptedMessage = bytes(decryptedBytes[ : -emptySpaces])
+    else:
+        decryptedMessage = bytes(decryptedBytes)
 
     # Printed decrypted message
     print("Decrypted plaintext is (in bytes) : ", decryptedMessage)
@@ -242,29 +246,15 @@ def shiftRows(state, inverse):
 def leftShift(array, count):
     """Left shift an array count times."""
 
-    result = array[:]
-    # Left shifting array by one in each loop
-    for i in range(count):
-        temp = result[1:]
-        temp.append(result[0])
-        result[:] = temp[:]
-
-    # Returning shifted array
-    return result
+    # Returning left shifted array
+    return array[count:] + array[:count]
 
 
 def rightShift(array, count):
     """Right shift an array count times."""
 
-    result = array[:]
-    # Right shifting array by one in each loop
-    for i in range(count):
-        temp = result[:-1]
-        temp.insert(0, result[-1])
-        result[:] = temp[:]
-
-    # Returning shifted array
-    return result
+    # Returning right shifted array
+    return array[-count:] + array[:-count]
 
 
 def mixColumns(state, inverse):
