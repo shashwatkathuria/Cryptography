@@ -7,13 +7,16 @@ Created on Sun Mar 29 20:46:19 2020
 
 def main():
 
+    print()
     # Taking inputs from the user
     plaintext = input("Enter the message to be encrypted : ")
     key = input("Enter a key of 8 length (64-bits) (characters or numbers only) : ")
+    print()
 
     # Checking if key is valid or not
     if len(key) != 8:
-        return "Invalid Key. Key should be of 8 length (8 bytes)."
+        print("Invalid Key. Key should be of 8 length (8 bytes).")
+        return
 
     # Determining if padding is required
     isPaddingRequired = (len(plaintext) % 8 != 0)
@@ -25,9 +28,10 @@ def main():
     plaintext = DESDecryption(key, ciphertext, isPaddingRequired)
 
     # Printing result
+    print()
     print("Encrypted Ciphertext is : %r " % ciphertext)
     print("Decrypted plaintext is  : ", plaintext)
-
+    print()
 
 # Permutation Matrix used after each SBox substitution for each round
 eachRoundPermutationMatrix = [
