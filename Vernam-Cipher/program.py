@@ -11,20 +11,23 @@ mappingsDict = {}
 
 def main():
 
+    print()
     # Taking inputs from the user
     plaintext = input("Enter the plaintext : ")
     key = input("Enter the key (length should be >= length of plaintext) : ")
+    print()
 
     # Initializing alphabets for rotating
-    alphabets = "abcdefghijklmnopqrstuvwxyz"
+    alphabets = "abcdefghijklmnopqrstuvwxyz".upper()
     # Initializing values to alphabets
-    for alphabet in alphabets.upper():
+    for alphabet in alphabets:
         mappingsDict[alphabet] = ord(alphabet) - 65
 
     plaintext = plaintext.upper()
+    key = key.upper()
 
     # Checking if key is invalid
-    if len(key) <= len(plaintext):
+    if len(key) < len(plaintext):
         print(errorMessage)
     # Else applying algorithm
     else:
@@ -35,8 +38,10 @@ def main():
         plaintext = vernamDecryption(ciphertext, key)
 
         # Printing answers
+        print()
         print("Encrypted ciphertext is : ", ciphertext)
         print("Decrypted plaintext is  : ", plaintext)
+        print()
     return
 
 def vernamEncryption(plaintext, key):
