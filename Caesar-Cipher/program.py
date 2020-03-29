@@ -7,9 +7,11 @@ Created on Sat Mar 28 16:25:38 2020
 
 def main():
 
+    print()
     # Taking inputs from the user
     plaintext = input('Enter the message to be encrypted : ')
     key = int(input('Enter the key (a number) : '))
+    print()
 
     # Encryption
     ciphertext = caesarEncryption(plaintext, key)
@@ -18,8 +20,10 @@ def main():
     plaintext = caesarDecryption(ciphertext, key)
 
     # Printing answers
+    print()
     print("Encrypted ciphertext is : ", ciphertext)
     print("Decrypted plaintext is  : ", plaintext)
+    print()
     return
 
 def caesarEncryption(plaintext, key):
